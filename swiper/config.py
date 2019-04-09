@@ -1,0 +1,5 @@
+YZX_SMS_URL = None
+
+YZX_SMS_PARAMS = {
+
+}
