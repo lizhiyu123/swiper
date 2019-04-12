@@ -4,7 +4,10 @@ from  lib.http import render_json
 from common import errors,keys
 from user.models import User
 from user.forms import ProfileFrom
+from user.logics import upload_avatar_to_server
 from django import forms
+import os
+from swiper import settings
 
 def submit_phone(request):
     """获取短信验证码"""
@@ -63,6 +66,7 @@ def set_profile(request):
 
     if profile_form.is_valid():
         profile = profile_form.save(commit=False)
+        print(profile.location)
         profile.id = uid
         profile.save()
         return render_json("modify profile success")
@@ -72,5 +76,11 @@ def set_profile(request):
 
 def upload_avatar(request):
     """头像上传"""
-    pass
+    if not request.method == "POST":
+        return render_json("request method error", errors.REQUEST_ERROR)
+    avatar = request.FILES.get("avatar")
+    uid = request.session.get("uid")
 
+    upload_avatar_to_server(uid,avatar)
+
+    return render_json("upload success")
